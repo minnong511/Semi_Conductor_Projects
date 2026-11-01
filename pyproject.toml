@@ -1,0 +1,21 @@
+[project]
+name = "semiconductor-process-projects"
+version = "0.1.0"
+description = "반도체 공정 데이터 분석 및 가상 계측 프로젝트"
+requires-python = ">=3.13"
+dependencies = [
+    "numpy",
+    "pandas",
+    "openpyxl",
+    "scipy",
+    "statsmodels",
+    "matplotlib",
+    "seaborn",
+    "scikit-learn",
+    "optuna",
+    "jupyterlab",
+    "ipykernel",
+]
+
+[tool.uv]
+package = false

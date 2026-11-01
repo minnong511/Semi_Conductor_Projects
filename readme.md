@@ -4,6 +4,20 @@
 - **프로젝트 2 — Recipe 최적화** (`project2_recipe_optimization`): 다중회귀 및 최적화 알고리즘으로 목표 두께·Uniformity·공정능력을 고려한 Recipe 도출과 데이터 한계·부작용 관리 방안 설계.
 - **프로젝트 3 — Virtual Metrology 및 이상감지** (`project3_virtual_metrology`): 주요 변수 선정, 분류·회귀 모델 평가 및 튜닝을 통한 가상 계측·공정 이상감지 시스템 구축.
 
+## 환경 설정
+
+의존성은 `pyproject.toml`과 `uv.lock`으로 관리합니다. Python 3.13 이상이 필요합니다.
+
+기존 conda `pr` 환경에 설치하려면:
+
+```bash
+conda activate pr
+uv pip install --python "$CONDA_PREFIX/bin/python" -r pyproject.toml
+jupyter lab
+```
+
+이 방법은 `pr`에 이미 설치된 호환 버전을 유지하므로 `uv.lock`의 버전과 다를 수 있습니다. 별도 환경에서 lock 파일의 버전을 그대로 설치하려면 프로젝트 폴더에서 `uv sync --locked`를 실행합니다. 이 명령은 프로젝트의 `.venv`를 사용합니다.
+
 ## 데이터셋
 
 원본 데이터는 `datasets/`에 저장하며, 두 프로젝트 이상에서 공통으로 사용합니다.

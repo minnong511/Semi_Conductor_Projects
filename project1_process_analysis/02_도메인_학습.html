@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>프로젝트 1 | 증착 공정과 데이터 이해</title>
+<style>
+:root{--ink:#1b2b3c;--muted:#52677a;--blue:#075c8c;--teal:#007f77;--gold:#bd6417;--line:#d6e3ec;--bg:#f3f7fa}*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.75 system-ui,-apple-system,"Apple SD Gothic Neo",sans-serif}header{background:#12354d;color:white;padding:58px max(24px,calc((100vw - 1060px)/2));}header .tag{color:#9ae6df;font-weight:700;letter-spacing:.08em}h1{font-size:clamp(30px,5vw,52px);line-height:1.18;margin:12px 0}header p{max-width:700px;color:#d5e6ef;font-size:18px}main{max-width:1100px;margin:auto;padding:30px 20px 65px}nav{display:flex;gap:9px;flex-wrap:wrap;margin:0 0 24px}nav a{background:white;border:1px solid var(--line);border-radius:99px;color:var(--blue);text-decoration:none;padding:6px 14px;font-size:14px}section{background:#fff;border:1px solid var(--line);border-radius:16px;padding:clamp(20px,3vw,34px);margin:18px 0;box-shadow:0 6px 22px #17384b0a}h2{font-size:26px;line-height:1.3;margin:0 0 14px}h3{font-size:18px;margin:20px 0 5px}.eyebrow{color:var(--teal);font-size:13px;font-weight:800;letter-spacing:.08em}.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px}.card{padding:18px;border-radius:12px;background:#f3f8fb}.callout{border-left:4px solid var(--gold);background:#fff8ed;padding:14px 18px;margin:20px 0}.flow{display:flex;flex-wrap:wrap;align-items:stretch;gap:10px;margin:18px 0}.flow div{flex:1 1 155px;background:#eef6f8;border-radius:12px;padding:14px}.flow b{color:#006b66}svg{width:100%;height:auto;display:block}figure{margin:15px 0}figcaption,.small{font-size:14px;color:var(--muted)}a{color:#075c8c}code{font-size:.92em;background:#edf3f7;padding:2px 5px;border-radius:4px}.pill{font-weight:700;color:#006b66}.bar{height:100%;background:#00877f;border-radius:5px}table{border-collapse:collapse;width:100%;font-size:15px}th,td{padding:10px;text-align:left;border-bottom:1px solid var(--line);vertical-align:top}label{font-weight:700;display:block}input[type=range]{width:100%;accent-color:#007f77}output{font-weight:800;color:#006b66}.diagram{border:1px solid var(--line);border-radius:12px;background:#f9fcfe;padding:14px}.check{padding-left:20px}footer{color:var(--muted);font-size:14px;padding:15px 6px}@media(max-width:700px){.grid{grid-template-columns:1fr}header{padding:38px 22px}section{padding:20px}table{font-size:13px}}
+</style><link rel="stylesheet" href="../assets/study-design.css"><script defer src="../assets/study-nav.js"></script></head><body><header><div class="tag">PROJECT 01 · PROCESS ANALYSIS</div><h1>웨이퍼 위의 얇은 막,<br>데이터로 이해하기</h1></header><main>
+<nav aria-label="페이지 목차"><a href="#roadmap">큰 그림</a><a href="#wafer3d">3D 웨이퍼</a><a href="#pvd">PVD</a><a href="#data">데이터</a><a href="#variation">두께와 산포</a><a href="#experiment">Split 실험</a><a href="#glossary">핵심 용어</a><a href="#sources">출처</a></nav>
+<section id="roadmap"><h2>웨이퍼에서 박막까지</h2><p><b>웨이퍼</b>는 반도체 회로를 만들기 위한 얇은 원판으로, 보통 실리콘으로 만듭니다. 원판 위에 같은 회로를 여러 개 만들고 완성 후 잘라낸 각각을 <b>칩</b>이라고 부릅니다. 회로를 만드는 동안 여러 재료를 얇게 쌓는 증착, 회로 모양을 만드는 패터닝, 필요한 부분을 제거하는 식각 등의 단계를 반복합니다. 여기서 살펴볼 단계는 금속 박막을 <b>증착</b>하는 공정입니다. AlCu는 알루미늄과 구리를 포함하는 금속 박막을 뜻합니다.</p><div class="flow"><div><b>① 공정 조건</b><br>장비와 공정이 어떤 상태였는가?</div><div><b>② 증착</b><br>재료가 웨이퍼 위에 얇은 막을 형성</div><div><b>③ 계측</b><br>여러 지점의 막 두께를 측정</div><div><b>④ 분석</b><br>센서와 두께·산포의 관계를 탐색</div></div><p>전기회로에 비유하면, 센서는 시스템의 상태를 관측하는 신호이고 두께는 공정이 끝난 뒤 확인하는 결과입니다. <b>관측 신호와 직접 바꿀 수 있는 제어 입력은 구별</b>해야 합니다.</p></section>
+<section id="wafer3d"><h2>3D로 살펴보는 웨이퍼와 박막</h2>
+
+<div class="grid"><div class="diagram"><canvas id="p1waferCanvas" width="760" height="440" role="img" aria-label="회전 가능한 3차원 스퍼터링 개념도. 상단은 타깃, 하단 회색은 웨이퍼, 주황색은 박막과 원료 입자이며 밝은 회색은 이온입니다." style="display:block;width:100%;height:auto;touch-action:none;cursor:grab;background:#e5e5e2;border-radius:0">브라우저가 캔버스를 지원하지 않아 모델을 표시할 수 없습니다.</canvas><p class="small">회색: Ar⁺ 이온 ↑ · 주황: 타깃 원료 입자 ↓ · 회색 원판: 웨이퍼</p><p id="p1status" role="status" class="small">애니메이션 재생 중</p><button id="p1play" type="button" aria-pressed="true" style="padding:8px 14px;border:1px solid #8daaba;border-radius:8px;background:#fff;color:#12354d;cursor:pointer">애니메이션 일시정지</button><label for="p1angle">좌우 회전 <output id="p1angleOut">35°</output></label><input id="p1angle" type="range" min="-180" max="180" value="35" step="1"><label for="p1elev">보는 높이 <output id="p1elevOut">35°</output></label><input id="p1elev" type="range" min="10" max="75" value="35" step="1"><label for="p1film">박막 두께 (임의의 단계) <output id="p1filmOut">4</output></label><input id="p1film" type="range" min="1" max="10" value="4" step="1"><button id="p1reset" type="button" style="margin-top:12px;padding:8px 14px;border:1px solid #8daaba;border-radius:8px;background:#fff;color:#12354d;cursor:pointer">기본 보기로 초기화</button><noscript><p>3D 모델을 조작하려면 JavaScript를 켜야 합니다.</p></noscript></div><div><h3>1. 무엇이 쌓이는가?</h3><p>PVD의 원료 입자가 기판 표면에 도달하고 서로 붙어 막을 형성합니다. 실제 막은 기판에 비해 훨씬 얇습니다.</p><h3>2. 두께는 무엇에 따라 달라질까?</h3><p>두께는 입자가 표면에 쌓이는 속도와 시간에 영향을 받습니다. 증착 속도가 일정하다고 단순화하면 <code>두께 변화 ≈ 증착 속도 × 시간</code>입니다. 공정 조건에 따라 속도와 공간 분포는 달라질 수 있습니다.</p><h3>3. 17개 지점은 왜 필요한가?</h3><p>한 점만으로는 원판의 다른 위치까지 같은 두께인지 알 수 없습니다. 여러 위치를 측정하면 평균 수준과 위치 간 산포를 함께 볼 수 있습니다.</p></div></div></section>
+<section id="pvd"><h2>PVD는 무엇인가요?</h2><p>물리기상증착(Physical Vapor Deposition, PVD)은 재료를 물리적인 방법으로 입자 상태로 만들어 기판 표면에 박막으로 쌓는 방법의 범주입니다. PVD 중 하나인 <b>스퍼터링</b>에서는 이온 충돌로 타깃 원자가 방출됩니다.</p><figure class="diagram"><svg viewBox="0 0 820 320" role="img" aria-labelledby="pvd-title pvd-desc"><title id="pvd-title">스퍼터링의 개념도</title><desc id="pvd-desc">진공 챔버 안에서 아르곤 이온이 타깃에 충돌하고, 타깃 물질이 웨이퍼에 쌓이는 과정을 보여준다.</desc><defs><marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10z" fill="#e85b27"/></marker></defs><rect x="110" y="20" width="600" height="280" rx="25" fill="#efefed" stroke="#a3a3a0" stroke-width="3"/><text x="130" y="47" fill="#333333" font-size="17">낮은 압력의 챔버</text><rect x="265" y="62" width="290" height="30" rx="7" fill="#292929"/><text x="410" y="82" text-anchor="middle" fill="white" font-size="16">타깃: 막의 원료</text><circle cx="300" cy="140" r="23" fill="#dededb"/><circle cx="520" cy="140" r="23" fill="#dededb"/><text x="300" y="146" text-anchor="middle" font-size="16">Ar⁺</text><text x="520" y="146" text-anchor="middle" font-size="16">Ar⁺</text><path d="M300 115 L320 97 M520 115 L500 97" stroke="#777777" stroke-width="3" marker-end="url(#arrow)"/><path d="M355 100 L305 226 M405 100 L410 226 M465 100 L515 226" stroke="#e85b27" stroke-width="3" stroke-dasharray="7 6" marker-end="url(#arrow)"/><text x="410" y="170" text-anchor="middle" fill="#333333" font-size="17">튀어나온 원료 입자</text><rect x="250" y="233" width="320" height="10" rx="3" fill="#e85b27"/><rect x="235" y="243" width="350" height="21" rx="8" fill="#858582"/><text x="410" y="286" text-anchor="middle" fill="#333333" font-size="16">웨이퍼 위에 박막이 쌓임</text></svg><figcaption>타깃은 박막의 원료이며, 두께의 목표값을 뜻하는 target과 다른 용어입니다.</figcaption></figure><h3>스퍼터링을 이루는 물리: 진공 → 플라스마 → 박막 성장</h3><ol><li><b>낮은 압력:</b> 챔버를 배기하고 보통 아르곤 같은 공정 가스를 넣습니다. 낮은 압력에서는 입자가 이동 중 기체 분자와 충돌할 가능성이 줄어 타깃에서 나온 원자가 웨이퍼까지 이동하는 데 도움이 됩니다. 충돌이 완전히 없어지는 것은 아닙니다.</li><li><b>플라스마:</b> 전기장을 이용해 전자에 에너지를 주면 일부 아르곤 원자가 전자 충돌로 이온화됩니다. 이렇게 이온과 전자 등이 섞여 있는 기체가 플라스마입니다. 양전하의 Ar⁺ 이온은 음전위의 타깃 쪽으로 가속될 수 있습니다.</li><li><b>스퍼터링과 성장:</b> 가속된 이온이 타깃에 충돌하면 운동량 전달로 타깃 원자 일부가 밖으로 방출됩니다. 이 원자들 중 일부가 웨이퍼에 도달하여 표면에 붙고 축적되면서 박막이 성장합니다.</li></ol><p>압력, 전력, 가스 유량 및 장비 구조에 따라 막 성장 과정이 달라집니다.</p><div class="grid"><div class="card"><b>왜 센서가 필요할까?</b><p>가스 유량, 온도, 전압, 전류 등은 공정 상태를 보여줍니다. 공정 결과가 달라졌을 때 어떤 신호가 함께 변했는지 살펴볼 수 있습니다.</p></div><div class="card"><b>왜 두께를 여러 번 측정할까?</b><p>웨이퍼 중심과 가장자리 등이 같은 두께가 아닐 수 있기 때문입니다. 한 점의 측정만으로는 웨이퍼 전체의 균일성을 파악하기 어렵습니다.</p></div></div></section>
+<section id="data"><h2>두 CSV는 각각 무엇을 담을까?</h2><p>이 프로젝트는 공개된 AlCu 데이터 중 X와 Y 두 파일을 사용합니다. 아래 크기는 내려받은 CSV를 확인한 결과입니다.</p><table><thead><tr><th>파일</th><th>의미</th><th>형태</th></tr></thead><tbody><tr><td><code>X_pvd_AlCu.csv</code></td><td>설비 센서 시계열을 집계한 입력값. 열 이름은 <code>Sensor_1</code> ~ <code>Sensor_97</code>.</td><td>4,848행 × 97열</td></tr><tr><td><code>Y_pvd_AlCu.csv</code></td><td>공정 후 17개 지점의 두께 측정값. 열 이름은 <code>RAW_VALUE_t_1</code> ~ <code>RAW_VALUE_t_17</code>.</td><td>4,848행 × 17열</td></tr></tbody></table><div class="callout"><b>알 수 있는 것과 아직 모르는 것</b><br>행 수는 같지만, ID가 없어 두 파일의 행 순서가 대응하는지 확인이 필요합니다. 한 행의 정확한 단위, 센서별 물리량과 단위, 두께의 단위·변환 방식, 17점의 실제 위치도 확인되지 않았습니다. 숫자를 곧바로 nm나 공정 설정값으로 해석하지 않습니다.</div></section>
+<section id="variation"><h2>평균이 같아도 균일도는 다를 수 있습니다</h2><p>17개 값의 평균은 100으로 고정하고 퍼짐을 비교합니다. 수치는 임의 단위입니다.</p><div class="grid"><div class="diagram"><label for="spread">퍼짐 조절: <output id="spreadLabel" for="spread">4</output></label><input id="spread" type="range" min="0" max="20" value="4" step="1"><div id="bars" aria-live="polite"></div><p>평균: <output id="mean">100.0</output> · 표준편차(17개 값 기준): <output id="sd">0.0</output></p></div><div><h3>두 수치의 역할</h3><p><b>평균 두께</b>는 전체적인 두께 수준을, <b>표준편차</b>는 측정값이 평균 주위로 얼마나 퍼졌는지를 나타냅니다.</p><p>예를 들어 평균이 목표에 맞아도 일부 지점이 너무 두껍거나 얇으면 문제가 될 수 있습니다. 반대로 모든 지점이 균일해도 평균이 목표와 다를 수 있습니다.</p><p>업계에서 사용하는 Uniformity는 정의가 여러 가지입니다. 예를 들어 최대·최소와 평균을 이용한 식이나 표준편차 기반 식이 쓰이므로, <b>프로젝트에서 어떤 식을 쓰는지 명시</b>해야 합니다.</p></div></div><noscript><p>슬라이더 예제를 사용하려면 브라우저에서 JavaScript를 켜야 합니다.</p></noscript></section>
+<section id="experiment"><h2>상관관계와 Split 실험은 어떻게 다를까?</h2><div class="grid"><div class="card"><h3>관측 데이터 분석</h3><p>센서값과 두께가 함께 변하는지 확인합니다. 다만 다른 공정 상태나 장비 상태도 동시에 달라졌다면 어느 변수가 원인인지 구분하기 어렵습니다.</p><p><b>답할 수 있는 질문:</b> “이 센서값과 두께 사이에 어떤 관계가 관측되었나?”</p></div><div class="card"><h3>계획된 Split 실험</h3><p>비교할 조건을 미리 정해 웨이퍼를 그룹으로 나누고, 가능한 다른 조건을 통제합니다. 무작위 배정과 반복 측정은 우연과 시간 영향 등을 줄이는 데 도움이 됩니다.</p></div></div><div class="callout">공개 CSV가 계획된 Split 실험으로 생성되었다는 근거는 현재 확인되지 않았습니다. 관측값을 임의로 그룹화한 비교를 곧바로 인과 실험 결과로 부를 수 없습니다.</div></section>
+<section id="glossary" aria-labelledby="glossary-title"><h2 id="glossary-title">핵심 용어</h2><div class="glossary">
+<div class="glossary-group"><h3>웨이퍼와 증착</h3><dl class="glossary-list">
+<div><dt>웨이퍼 · 기판</dt><dd>웨이퍼는 반도체 회로를 만드는 얇은 원판입니다. 기판은 박막을 쌓는 바탕으로, 이 공정에서는 웨이퍼가 기판입니다.</dd></div>
+<div><dt>박막 · 두께</dt><dd>박막은 기판 표면에 얇게 쌓인 재료층입니다. 두께는 그 층이 표면에 수직인 방향으로 얼마나 두꺼운지 나타냅니다.</dd></div>
+<div><dt>증착 · PVD</dt><dd>증착은 표면에 재료를 쌓는 공정입니다. PVD는 재료를 물리적인 방법으로 입자 상태로 만들어 기판에 박막을 형성하는 방식의 묶음입니다.</dd></div>
+<div><dt>스퍼터링</dt><dd>이온을 원료 표면에 충돌시켜 원료 입자를 떼어내고, 그 입자가 기판에 도달해 막을 만드는 PVD 방법입니다.</dd></div>
+<div><dt>타깃 · 이온</dt><dd>타깃은 박막을 만들 재료이고, 이온은 전하를 띤 입자입니다. 스퍼터링에서는 아르곤 이온이 타깃을 때려 원료 입자를 방출합니다.</dd></div>
+<div><dt>진공 · 플라스마</dt><dd>진공은 기체 압력이 낮은 상태입니다. 플라스마는 이온과 전자 등을 포함하는 기체 상태로, 스퍼터링에 필요한 이온을 만듭니다.</dd></div>
+</dl></div><div class="glossary-group"><h3>공정 데이터와 분석</h3><dl class="glossary-list">
+<div><dt>센서 · Recipe(레시피)</dt><dd>센서는 공정 상태를 측정합니다. Recipe는 온도나 시간처럼 장비에 지정한 조건과 순서입니다. 센서의 측정값과 장비 설정값은 다를 수 있습니다.</dd></div>
+<div><dt>계측 · 측정 지점</dt><dd>계측은 두께 같은 물리량을 측정하는 일입니다. 여러 위치를 측정하면 한 웨이퍼에서 두께가 얼마나 고른지 살펴볼 수 있습니다.</dd></div>
+<div><dt>평균 · 산포</dt><dd>평균은 여러 측정값의 대표적인 수준이고, 산포는 값들이 서로 얼마나 퍼져 있는지입니다. 평균이 같아도 산포는 다를 수 있습니다.</dd></div>
+<div><dt>균일도 · 비균일도</dt><dd>균일도는 두께가 위치에 따라 얼마나 고른지 나타내는 개념입니다. 비균일도는 차이의 크기를 나타내며, 계산 방식은 분석마다 명시해야 합니다.</dd></div>
+<div><dt>상관관계 · 인과관계</dt><dd>상관관계는 두 값이 함께 변하는 경향입니다. 한 값을 바꿔서 다른 값이 변했다는 인과관계는 상관관계만으로 확정할 수 없습니다.</dd></div>
+<div><dt>Split 실험</dt><dd>비교할 공정 조건을 미리 정하고 웨이퍼를 나눠 처리한 뒤 결과를 비교하는 실험입니다. 다른 조건을 통제하고 반복하면 조건 차이의 영향을 더 잘 살펴볼 수 있습니다.</dd></div>
+<div><dt>X와 Y</dt><dd>X는 공정 센서값, Y는 두께 측정값입니다. 두 파일을 함께 분석하기 전에 각 행이 어떻게 대응하는지 확인해야 합니다.</dd></div>
+</dl></div></div></section>
+<section id="sources"><h2>출처와 더 읽을 자료</h2><ul><li><a href="https://zenodo.org/records/16881338">Zenodo: AlCu·WTi PVD 공정 및 두께 데이터</a> — 데이터 설명과 파일.</li><li><a href="https://lnf-wiki.eecs.umich.edu/wiki/Sputter_deposition">University of Michigan: Sputter deposition</a> — 스퍼터링 원리와 장비 설명.</li><li><a href="https://www.itl.nist.gov/div898/handbook/pri/section1/pri11.htm">NIST: What is experimental design?</a> — 실험 설계의 기초.</li></ul></section></main>
+<script src="../assets/three/three.min.js"></script>
+<script>
+(()=>{const input=document.querySelector('#spread'), label=document.querySelector('#spreadLabel'), bars=document.querySelector('#bars'), mean=document.querySelector('#mean'), sd=document.querySelector('#sd');const pattern=[-8,-7,-6,-5,-4,-3,-2,-1,0,1,2,3,4,5,6,7,8];function update(){const v=+input.value;label.value=v;const values=pattern.map(x=>100+x*v/8);const m=values.reduce((a,b)=>a+b,0)/values.length;const s=Math.sqrt(values.reduce((a,b)=>a+(b-m)**2,0)/values.length);mean.value=m.toFixed(1);sd.value=s.toFixed(1);bars.replaceChildren();const svg=document.createElementNS('http://www.w3.org/2000/svg','svg');svg.setAttribute('viewBox','0 0 340 154');svg.setAttribute('role','img');svg.setAttribute('aria-label',`17개 가상 두께 값의 막대 그래프. 평균 ${m.toFixed(1)}, 모집단 표준편차 ${s.toFixed(1)}.`);values.forEach((value,i)=>{let rect=document.createElementNS('http://www.w3.org/2000/svg','rect');rect.setAttribute('x',8+i*19);rect.setAttribute('y',140-value);rect.setAttribute('width',13);rect.setAttribute('height',value);rect.setAttribute('rx',3);rect.setAttribute('fill',i===8?'#f05a22':'#777777');svg.appendChild(rect)});bars.appendChild(svg)}input.addEventListener('input',update);update()})();
+
+
+(()=>{
+ const canvas=document.getElementById('p1waferCanvas'), status=document.getElementById('p1status');
+ const az=document.getElementById('p1angle'), el=document.getElementById('p1elev'), film=document.getElementById('p1film');
+ const azOut=document.getElementById('p1angleOut'), elOut=document.getElementById('p1elevOut'), filmOut=document.getElementById('p1filmOut'), play=document.getElementById('p1play');
+ if(typeof THREE==='undefined'){status.textContent='Three.js를 불러오지 못했습니다. assets/three 폴더를 함께 두고 다시 열어 주세요.';return;}
+ let renderer;
+ try {renderer=new THREE.WebGLRenderer({canvas,antialias:true,alpha:true});}
+ catch(error){status.textContent='이 브라우저에서 3D 화면을 표시할 수 없습니다. WebGL 지원을 확인해 주세요.';return;}
+ renderer.setPixelRatio(Math.min(window.devicePixelRatio||1,2));
+ renderer.setClearColor(0xe5e5e2,1);
+ const scene=new THREE.Scene();
+ const camera=new THREE.PerspectiveCamera(38,canvas.width/canvas.height,0.1,50);
+ scene.add(new THREE.HemisphereLight(0xffffff,0x777777,2));
+ const light=new THREE.DirectionalLight(0xffffff,2);light.position.set(3,8,4);scene.add(light);
+ const baseMat=new THREE.MeshStandardMaterial({color:0x8b8b88,metalness:.4,roughness:.4});
+ const filmMat=new THREE.MeshStandardMaterial({color:0xf05a22,metalness:.35,roughness:.35});
+ const targetMat=new THREE.MeshStandardMaterial({color:0x292929,metalness:.55,roughness:.3});
+ const base=new THREE.Mesh(new THREE.CylinderGeometry(1.65,1.65,.17,64),baseMat);base.position.y=0;scene.add(base);
+ const layer=new THREE.Mesh(new THREE.CylinderGeometry(1.65,1.65,1,64),filmMat);scene.add(layer);
+ const target=new THREE.Mesh(new THREE.CylinderGeometry(1.35,1.35,.20,64),targetMat);target.position.y=3.1;scene.add(target);
+ // Chamber edges are conceptual, not a representation of the dataset's tool.
+ const chamber=new THREE.LineSegments(new THREE.EdgesGeometry(new THREE.BoxGeometry(4.3,4.4,4.3)),new THREE.LineBasicMaterial({color:0x9a9a98,transparent:true,opacity:.65}));chamber.position.y=1.55;scene.add(chamber);
+ const ionGeo=new THREE.SphereGeometry(.07,12,8),atomGeo=new THREE.SphereGeometry(.055,12,8);
+ const ionMat=new THREE.MeshStandardMaterial({color:0xd5d5d2,emissive:0x555555,emissiveIntensity:.2});
+ const atomMat=new THREE.MeshStandardMaterial({color:0xf05a22,emissive:0x7e2500,emissiveIntensity:.2});
+ const particles=[];
+ for(let i=0;i<26;i++){
+  const ion=i<11, mesh=new THREE.Mesh(ion?ionGeo:atomGeo,ion?ionMat:atomMat);
+  scene.add(mesh);particles.push({mesh,ion,phase:(i*.61803398875)%1,rad:.25+((i*37)%100)/100*.8,angle:i*2.399});
+ }
+ let playing=!window.matchMedia('(prefers-reduced-motion: reduce)').matches, visible=true, raf=0, t=0, previous=0;
+ function updateControls(){
+  azOut.textContent=az.value+'°';elOut.textContent=el.value+'°';filmOut.textContent=film.value;
+  const a=Number(az.value)*Math.PI/180,e=Number(el.value)*Math.PI/180,r=8.5;
+  camera.position.set(r*Math.cos(e)*Math.sin(a),1.5+r*Math.sin(e),r*Math.cos(e)*Math.cos(a));camera.lookAt(0,1.5,0);
+  const h=.035+Number(film.value)*.025;layer.scale.y=h;layer.position.y=.085+h/2;
+  render();
+ }
+ function resize(){const w=Math.max(1,Math.round(canvas.getBoundingClientRect().width)),h=Math.round(w*440/760);renderer.setSize(w,h,false);camera.aspect=w/h;camera.updateProjectionMatrix();render();}
+ function render(){
+  const h=.035+Number(film.value)*.025;
+  particles.forEach(p=>{const u=(p.phase+t)%1; const y=p.ion?1.15+u*1.82:2.96-u*(2.82-h);p.mesh.position.set(Math.cos(p.angle)*p.rad,y,Math.sin(p.angle)*p.rad);});
+  renderer.render(scene,camera);
+ }
+ function tick(now){raf=0;if(!playing||!visible)return;if(previous)t+=(Math.min(now-previous,50)/1000)*.10;previous=now;render();raf=requestAnimationFrame(tick);}
+ function start(){if(playing&&visible&&!raf){previous=0;raf=requestAnimationFrame(tick);}}
+ function state(){play.textContent=playing?'애니메이션 일시정지':'애니메이션 재생';play.setAttribute('aria-pressed',String(playing));status.textContent=playing?'애니메이션 재생 중':'애니메이션 일시정지됨';if(!playing&&raf){cancelAnimationFrame(raf);raf=0;}start();}
+ play.addEventListener('click',()=>{playing=!playing;state()});
+ [az,el,film].forEach(x=>x.addEventListener('input',updateControls));
+ document.getElementById('p1reset').addEventListener('click',()=>{az.value='35';el.value='35';film.value='4';t=0;updateControls();});
+ let drag=null;canvas.addEventListener('pointerdown',e=>{drag={x:e.clientX,y:e.clientY,a:Number(az.value),v:Number(el.value)};canvas.setPointerCapture(e.pointerId);canvas.style.cursor='grabbing'});
+ canvas.addEventListener('pointermove',e=>{if(!drag)return;let a=drag.a+(e.clientX-drag.x)*.8;az.value=String(((Math.round(a)+180)%360+360)%360-180);el.value=String(Math.max(10,Math.min(75,Math.round(drag.v+(e.clientY-drag.y)*.35))));updateControls()});
+ function stop(){drag=null;canvas.style.cursor='grab'}canvas.addEventListener('pointerup',stop);canvas.addEventListener('pointercancel',stop);
+ if('ResizeObserver'in window)new ResizeObserver(resize).observe(canvas);else window.addEventListener('resize',resize);
+ if('IntersectionObserver'in window)new IntersectionObserver(entries=>{visible=entries[0].isIntersecting;if(!visible&&raf){cancelAnimationFrame(raf);raf=0;}start();}).observe(canvas);
+ resize();updateControls();state();
+})();
+</script></body></html>

@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>프로젝트 3 | 가상계측과 이상탐지</title><style>
+:root{--ink:#182b3b;--muted:#4d6372;--blue:#245e83;--teal:#087c73;--orange:#a74d18;--paper:#f3f6f6;--line:#d4e0e2}*{box-sizing:border-box}body{margin:0;color:var(--ink);background:var(--paper);font:16px/1.75 -apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Noto Sans KR",sans-serif}header{background:#123349;color:white;padding:4rem max(6vw,calc((100vw - 1100px)/2));}header .kicker{color:#a4d9d0;letter-spacing:.1em;font-weight:700;font-size:.82rem}h1{font-size:clamp(2rem,5vw,3.4rem);line-height:1.2;margin:.8rem 0}header p{max-width:700px;color:#dcebf0;font-size:1.08rem}main{max-width:1100px;margin:auto;padding:0 22px 70px}nav{background:white;border:1px solid var(--line);border-radius:12px;padding:16px 22px;margin:25px 0;display:flex;gap:15px;flex-wrap:wrap}a{color:#115e86;text-underline-offset:3px}nav a{font-size:.9rem;font-weight:700}section{background:white;border:1px solid var(--line);border-radius:16px;padding:clamp(22px,4vw,44px);margin:20px 0}h2{font-size:1.55rem;line-height:1.3;margin:0 0 16px}h3{margin:25px 0 7px;font-size:1.14rem}p{margin:.7em 0}.eyebrow{font-size:.78rem;letter-spacing:.1em;color:var(--teal);font-weight:800}.lead{font-size:1.1rem}.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}.card{background:#f5f9f9;border:1px solid var(--line);padding:20px;border-radius:12px}.card strong{color:#185a72}.note{border-left:4px solid #db8d39;background:#fff8ea;padding:12px 18px;margin:18px 0}.legend{font-size:.88rem;color:var(--muted)}.diagram{width:100%;height:auto;display:block;background:#f5f9f9;border-radius:12px;margin:20px 0}.tablewrap{overflow-x:auto}table{border-collapse:collapse;width:100%;min-width:550px}th,td{text-align:left;padding:12px;border-bottom:1px solid var(--line);vertical-align:top}th{background:#f0f6f6}code,.formula{background:#eff5f4;padding:2px 6px;border-radius:4px}.formula{display:inline-block;padding:8px 12px;margin:4px 0;color:#144e59;font-weight:700}ul,ol{padding-left:1.25rem}li{margin:.35rem 0}.matrix{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:12px 0}.matrix div{padding:13px;border-radius:8px;background:#eaf4f2}.matrix .warning{background:#fff0e7}.tag{display:inline-block;background:#d7efea;color:#272727;border-radius:30px;padding:2px 10px;font-size:.8rem;font-weight:700}label{font-weight:700}input[type=range]{width:min(100%,420px);accent-color:var(--teal)}output{font-weight:700;color:var(--blue)}footer{font-size:.9rem;color:var(--muted)}@media(max-width:650px){header{padding:3rem 22px}.grid{grid-template-columns:1fr}section{padding:22px}nav{gap:10px}.diagram{min-height:130px}}
+
+.model3d{display:grid;grid-template-columns:minmax(0,1.4fr) minmax(230px,1fr);gap:16px;margin:20px 0}.model3d-view{border-radius:14px;background:#102d40;overflow:hidden}.model3d-view canvas{width:100%;height:auto;display:block;touch-action:none;cursor:grab}.model3d-view canvas:active{cursor:grabbing}.model3d-controls{padding:18px;border-radius:14px;background:#edf5f3}.model3d-controls label{display:block;margin:10px 0 0}.model3d-controls input{width:100%}.model3d-controls select,.model3d-controls button{font:inherit;padding:8px;border:1px solid #9fb9ba;border-radius:7px;background:white;color:#18384b}.model3d-controls select{width:100%}.model3d-controls button{margin-top:12px;cursor:pointer}.model3d-flow{background:#fff;border-left:4px solid #087c73;border-radius:0 8px 8px 0;padding:12px;margin-top:14px}.model3d .legend{color:#425c68}.model3d-view .legend{color:#d3e4e8;margin:0;padding:0 15px 12px}@media(max-width:760px){.model3d{grid-template-columns:1fr}}
+
+.vm-stage-label{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap}.vm-stage-select{position:absolute;width:1px!important;height:1px!important;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
+.vm-stages{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:0;margin:0 0 18px;border:1px solid #222}.model3d-controls .vm-stages button{border:0;border-right:1px solid #222;border-radius:0;margin:0;padding:13px 6px;background:transparent;color:#181818;font-size:.9rem;font-weight:700}.model3d-controls .vm-stages button:last-child{border-right:0}.model3d-controls .vm-stages button[aria-pressed="true"]{background:#e65a24;color:#111}.model3d-controls .vm-stages button:focus-visible{outline:3px solid #111;outline-offset:2px;position:relative;z-index:1}
+</style><link rel="stylesheet" href="../assets/study-design.css"><script defer src="../assets/study-nav.js"></script></head><body>
+<header><div class="kicker">SEMICONDUCTOR DATA · STUDY 03</div><h1>가상계측과 이상탐지</h1><p>센서 신호로 두께를 예측하고 생산 검사 결과를 분류합니다.</p></header>
+<main><nav aria-label="목차"><a href="#map">전체 흐름</a><a href="#vm3d">3D로 보는 VM</a><a href="#vm">가상계측</a><a href="#classification">분류와 지표</a><a href="#validation">검증과 한계</a><a href="#glossary">용어 정리</a><a href="#sources">출처</a></nav>
+<section id="map"><div class="eyebrow">01 / THE BIG PICTURE</div><h2>하나의 센서 데이터, 서로 다른 질문</h2><p class="lead">공정이 끝난 뒤 무엇을 알고 싶은지에 따라 정답의 형태와 모델을 다르게 선택합니다.</p>
+<svg class="diagram" viewBox="0 0 900 205" role="img" aria-label="공정과 센서에서 출발해 PVD 두께 예측과 SECOM 합격 불합격 분류로 나뉘는 개념도"><defs><marker id="arr" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0 0 L0 6 L7 3 Z" fill="#747474"/></marker></defs><rect x="20" y="64" width="200" height="76" rx="12" fill="#222222"/><text x="120" y="97" fill="white" font-size="19" text-anchor="middle" font-weight="bold">공정·설비 센서</text><text x="120" y="120" fill="#e6e6e6" font-size="14" text-anchor="middle">설비 상태의 수치</text><path d="M225 102 H290 M290 102 V49 H345 M290 102 V155 H345" fill="none" stroke="#747474" stroke-width="3" marker-end="url(#arr)"/><rect x="350" y="15" width="530" height="70" rx="12" fill="#eeeeec"/><text x="370" y="45" fill="#272727" font-size="18" font-weight="bold">PVD → 회귀 → 두께라는 연속값</text><text x="370" y="68" fill="#555555" font-size="14">센서로 평균 두께 또는 17개 지점 값 예측</text><rect x="350" y="120" width="530" height="70" rx="12" fill="#e3e3e1"/><text x="370" y="150" fill="#272727" font-size="18" font-weight="bold">SECOM → 분류 → 합격 / 불합격</text><text x="370" y="173" fill="#555555" font-size="14">센서와 생산 검사 결과 사이의 관계 학습</text></svg>
+<p class="legend">PVD와 SECOM은 서로 다른 공정의 데이터입니다.</p><div class="grid"><div class="card"><strong>PVD AlCu</strong><p>AlCu 금속층을 물리기상증착(PVD)한 뒤 두께를 측정한 데이터입니다. X는 익명화된 센서 집계값이고 Y는 17개 지점의 두께입니다.</p></div><div class="card"><strong>SECOM</strong><p>반도체 생산의 센서 특성과 내부 검사 pass/fail 결과입니다. 1,567개 샘플 중 불합격은 104개이며, 두께 정답은 제공하지 않습니다.</p></div></div></section>
+<section id="vm3d"><div class="eyebrow">02 / EXPLORE IN 3D</div><h2>3D로 보는 공정과 가상계측</h2>
+<p>공정 중 센서는 설비 상태를 기록하고, 계측 장비는 공정 후 박막 두께를 측정합니다.</p>
+<div class="model3d"><div class="model3d-view"><canvas id="vmScene" width="720" height="450" role="img" aria-label="회전할 수 있는 개념 모형: 투명한 PVD 챔버 안의 웨이퍼와 박막, 챔버 주변 센서"><p>가상 모형은 챔버 속 웨이퍼와 박막, 주변 센서로 구성됩니다. 센서와 두께 측정을 활용하여 가상계측 모델을 학습합니다.</p></canvas><p id="vmLegend" class="legend" aria-live="polite"></p><p id="vmRenderStatus" class="legend" role="status"></p></div>
+<div class="model3d-controls"><label for="vmStage" class="vm-stage-label" aria-hidden="true">살펴볼 단계</label><div class="vm-stages" role="group" aria-label="가상계측 단계"><button type="button" data-vm-stage="train" aria-pressed="true">01 학습</button><button type="button" data-vm-stage="predict" aria-pressed="false">02 예측</button><button type="button" data-vm-stage="verify" aria-pressed="false">03 검증</button></div><select class="vm-stage-select" id="vmStage" tabindex="-1" aria-hidden="true" aria-describedby="vmStageText"><option value="train">① 과거 데이터로 학습</option><option value="predict">② 새 공정의 두께 예측</option><option value="verify">③ 실측값으로 예측 검증</option></select><div id="vmStageText" class="model3d-flow" aria-live="polite"></div><label for="vmAzimuth">좌우 회전 <output id="vmAzimuthValue" for="vmAzimuth">−35°</output></label><input type="range" id="vmAzimuth" min="-180" max="180" value="-35"><label for="vmTilt">위에서 내려다보는 각도 <output id="vmTiltValue" for="vmTilt">55°</output></label><input type="range" id="vmTilt" min="20" max="80" value="55"><button type="button" id="vmPause" aria-pressed="false">애니메이션 일시정지</button> <button type="button" id="vmReset">시점과 단계 초기화</button></div></div>
+<h3>학습과 예측의 차이</h3><p>학습할 때는 과거 관측의 센서 입력 X와 대응하는 실측 두께 Y를 함께 사용해 모델을 맞춥니다. 사용할 때는 새 공정의 센서값을 넣고 모델이 예상 두께를 출력합니다. 나중에 실측이 가능하면 예측값과 비교해 오차 및 공정 변화 여부를 확인합니다. 데이터의 X·Y 행 대응은 모델을 학습하기 전에 확인해야 합니다. 모델의 예측은 간접 추정이며 계측기의 측정값을 보장하거나 대체한다고 단정할 수 없습니다.</p>
+<div class="note"><strong>예측 시점과 데이터 누출:</strong> 공정 종료 직후에 예측하려면 그 시점까지 실제로 얻을 수 있는 센서값만 입력에 넣습니다. 종료 후 수집되는 정보, 두께 측정 결과나 그로부터 계산한 값을 입력에 섞으면 정답을 미리 본 것과 같아 평가 성능이 부풀려집니다. 학습·평가 분할 후 결측치 대체, 스케일링과 변수 선택도 학습 쪽에서만 맞춥니다. 공개 센서 집계값의 수집 시점은 별도 확인이 필요합니다.</div>
+<p><strong>SECOM은 별개의 흐름입니다.</strong> SECOM에서는 같은 모형의 두께를 예측하는 것이 아니라, 별도 데이터의 센서 특성으로 생산 검사 합격/불합격을 분류합니다. PVD와 SECOM의 샘플이나 정답은 서로 연결되어 있지 않습니다.</p></section>
+<section id="vm"><div class="eyebrow">03 / VIRTUAL METROLOGY</div><h2>측정 전, 두께를 예측한다</h2><p>실제 계측기는 공정이 끝난 웨이퍼에서 두께를 측정합니다. <strong>가상계측(Virtual Metrology, VM)</strong>은 이전에 쌓인 센서값과 실측값의 관계를 학습해, 새로운 공정의 두께를 추정합니다. 이는 모델의 예측값이므로 실측과 차이가 있을 수 있습니다.</p>
+<svg class="diagram" viewBox="0 0 900 150" role="img" aria-label="센서 입력과 학습된 모델에서 예측 두께가 나오고, 실측값과 비교해 오차를 확인하는 흐름"><rect x="20" y="36" width="180" height="70" rx="10" fill="#eeeeec"/><rect x="245" y="36" width="180" height="70" rx="10" fill="#222222"/><rect x="470" y="36" width="180" height="70" rx="10" fill="#eeeeec"/><rect x="695" y="36" width="180" height="70" rx="10" fill="#f7ddce"/><g text-anchor="middle" font-size="17" font-weight="bold"><text x="110" y="77" fill="#272727">센서 입력 X</text><text x="335" y="77" fill="white">학습된 모델</text><text x="560" y="77" fill="#272727">예측 두께 ŷ</text><text x="785" y="77" fill="#963d18">실측 y와 비교</text></g><g stroke="#747474" stroke-width="3" marker-end="url(#arr)"><line x1="205" y1="71" x2="238" y2="71"/><line x1="430" y1="71" x2="463" y2="71"/><line x1="655" y1="71" x2="688" y2="71"/></g></svg>
+<div class="grid"><div class="card"><strong>평균 두께 예측</strong><p>17개 측정값의 평균을 하나의 결과로 삼습니다. 공정 전체의 두께 수준을 이해하기 쉽습니다.</p></div><div class="card"><strong>17개 지점 예측</strong><p>위치별 값 각각을 예측합니다. 평균이 같더라도 지점별 두께 분포가 다른 경우를 살펴볼 수 있습니다.</p></div></div>
+<h3>모델을 비교하는 방법</h3><p>다중회귀는 입력 변수가 예측값에 기여하는 관계를 선형식으로 표현합니다. 트리 기반 모델은 입력값을 기준으로 데이터를 나누어 복잡한 관계를 학습할 수 있습니다. 어떤 방법이 좋은지는 처음 보는 데이터의 오차로 비교합니다.</p>
+<div class="note"><strong>실제 PVD 파일의 주의점:</strong> 97개 센서 열의 물리적 의미는 익명화되어 있으며 X와 Y의 행 대응 기준, 두께 단위·변환 방식 및 실규격은 확인이 필요합니다. 예측 오차의 단위도 목표값과 같으므로, 원 단위를 모르면 nm로 해석할 수 없습니다. 목표 규격 대비 오차는 규격과 스케일이 확인되거나 가정된 경우에만 계산합니다.</div>
+<h3>MAE와 RMSE: 예측이 얼마나 틀렸을까?</h3><p>오차는 <code>예측값 − 실측값</code>입니다. 부호가 서로 상쇄되지 않도록 MAE는 절댓값을, RMSE는 제곱을 사용합니다.</p><p class="formula">MAE = |오차|의 평균</p> <p class="formula">RMSE = √(오차²의 평균)</p><p>RMSE는 큰 오차에 더 큰 비중을 줍니다. 예를 들어 <strong>가상의 오차가 1, 1, 4</strong>이면 MAE는 2, RMSE는 약 2.45입니다. 예측 오차가 작더라도 규격 경계 근처에서는 판정이 달라질 수 있습니다.</p></section>
+<section id="classification"><div class="eyebrow">04 / CLASSIFICATION</div><h2>불합격을 얼마나 잘 찾아낼까?</h2><p>SECOM에서는 각 생산 샘플에 대해 <strong>합격(-1) 또는 불합격(1)</strong>이 정답입니다. 여기서는 불합격을 양성(positive)으로 둡니다. 불량 여부를 예측하는 분류 모델은 센서값과 검사 결과의 관계를 학습하지만, 특정 설비 고장의 종류나 원인을 자동으로 증명하지는 않습니다.</p>
+<h3>정답과 예측을 교차해 보기</h3><p class="legend">가상 수치: 1,000개 중 실제 불합격 50개</p><div class="matrix" role="group" aria-label="가상 혼동행렬: 실제 불합격과 합격에 대해 예측 결과를 교차"><div><strong>TP · 40</strong><br>실제 불합격 → 불합격 예측</div><div class="warning"><strong>FN · 10</strong><br>실제 불합격 → 합격 예측</div><div class="warning"><strong>FP · 30</strong><br>실제 합격 → 불합격 예측</div><div><strong>TN · 920</strong><br>실제 합격 → 합격 예측</div></div>
+<div class="grid"><div class="card"><strong>재현율 = TP / (TP + FN)</strong><p>실제 불합격 중 잡아낸 비율: 40 / 50 = <b>80%</b>. 놓치는 불합격이 줄어드는지 봅니다.</p></div><div class="card"><strong>정밀도 = TP / (TP + FP)</strong><p>불합격이라고 알린 것 중 실제 불합격 비율: 40 / 70 ≈ <b>57.1%</b>. 불필요한 경보 부담을 봅니다.</p></div></div>
+<p>정확도는 96%지만, 전부 합격으로 예측해도 95%입니다. 불합격이 적으면 정확도만으로는 놓친 불합격을 알기 어렵습니다. F1은 정밀도와 재현율의 조화평균이며, PR 곡선은 여러 판정 기준에서 두 값의 관계를 보여줍니다. 하나의 숫자보다 놓친 불합격과 불필요한 경보의 비용을 함께 살펴야 합니다.</p>
+<h3>판정 기준을 바꾸면?</h3><p>불합격 점수가 기준 이상이면 불합격으로 표시합니다.</p><label for="threshold">점수 기준: <output id="thresholdValue" for="threshold">0.5</output></label><br><input id="threshold" type="range" min="0" max="2" step="1" value="1"><p id="thresholdResult" aria-live="polite">기준 0.5: TP 40, FN 10, FP 30, TN 920 → 재현율 80%, 정밀도 57.1%</p><noscript>가운데 기준의 예시: 재현율 80%, 정밀도 57.1%.</noscript></section>
+<section id="validation"><div class="eyebrow">05 / VALIDATION</div><h2>처음 보는 데이터로 검증하기</h2><ol><li><strong>분할부터:</strong> 학습·검증·최종 평가 데이터를 나눕니다. 시점, Lot, 설비 같은 정보가 있다면 실제 적용 상황에 맞는 시간 또는 그룹 분할을 고려합니다.</li><li><strong>학습 데이터로만 준비:</strong> 결측값 대체, 스케일링, 변수 선택과 모델 튜닝을 학습 데이터에 맞추고 검증·평가 데이터에는 그 결과만 적용합니다. 교차검증에서도 각 학습 폴드 안에서 수행합니다.</li><li><strong>미래 정보를 넣지 않기:</strong> 예측 시점 이후에 얻은 측정값이나 결과 관련 정보를 입력에 넣으면 데이터 누출이 생겨 성능이 과대평가될 수 있습니다.</li><li><strong>운영 전 검증:</strong> 시간에 따른 공정 변화, 경보의 비용, 예측 불확실성과 새로운 고장 유형을 확인하고 실측·엔지니어 검토와 함께 사용합니다.</li></ol><div class="note">공개 데이터에서 시간·Lot·장비 식별 정보가 없으면 해당 방식의 검증을 수행할 수 없습니다. 그때는 무작위 분할 결과의 적용 범위를 명시합니다. SECOM의 pass/fail 분류만으로 모든 종류의 공정 이상을 탐지했다고 볼 수 없습니다.</div></section>
+<section id="glossary" class="glossary"><div class="eyebrow">06 / KEY TERMS</div><h2>프로젝트 3 용어 정리</h2>
+<div class="glossary-group"><h3>공정과 데이터</h3><dl class="glossary-list">
+<div><dt>계측 · 실측</dt><dd>측정 장비로 실제 물리량을 읽는 일과 그 결과입니다. 이 프로젝트에서는 웨이퍼의 박막 두께를 측정합니다.</dd></div>
+<div><dt>가상계측 (Virtual Metrology, VM)</dt><dd>과거 센서값과 실측 결과를 배운 모델로 새로운 웨이퍼의 품질을 추정하는 방법입니다. 모델의 출력은 측정값이 아니라 예측값입니다.</dd></div>
+<div><dt>센서 · 특성 (Feature)</dt><dd>센서는 공정 상태를 측정하는 장치이고, 특성은 모델에 넣는 입력값입니다. 예를 들어 공정 중 센서값을 요약한 평균을 특성으로 쓸 수 있습니다.</dd></div>
+<div><dt>타깃 · 라벨 (Target · Label)</dt><dd>모델이 맞히도록 학습하는 정답입니다. PVD에서는 측정한 두께가 회귀 타깃이고, SECOM에서는 합격 또는 불합격이 분류 라벨입니다.</dd></div>
+</dl></div>
+<div class="glossary-group"><h3>모델을 만들고 평가하기</h3><dl class="glossary-list">
+<div><dt>회귀 (Regression)</dt><dd>두께처럼 연속적인 숫자를 예측하는 방법입니다. 다중회귀는 여러 입력값을 함께 사용해 결과를 추정합니다.</dd></div>
+<div><dt>분류 (Classification)</dt><dd>입력을 보고 미리 정한 범주를 예측하는 방법입니다. SECOM에서는 합격과 불합격 중 하나를 예측합니다.</dd></div>
+<div><dt>모델 학습</dt><dd>과거 입력과 정답의 관계를 바탕으로 예측에 쓰일 규칙을 맞추는 과정입니다.</dd></div>
+<div><dt>학습 · 검증 · 시험 데이터</dt><dd>학습 데이터는 모델을 맞추고, 검증 데이터는 모델과 설정을 고르는 데 사용합니다. 시험 데이터는 선택을 마친 모델의 성능을 마지막에 평가합니다.</dd></div>
+<div><dt>하이퍼파라미터 · 튜닝</dt><dd>학습 전에 정하는 모델의 설정과 그 설정을 검증하며 고르는 과정입니다. 예를 들어 트리가 얼마나 깊게 나뉠지를 조절합니다.</dd></div>
+<div><dt>데이터 누출 (Data Leakage)</dt><dd>예측 시점에 알 수 없는 정보나 평가 데이터의 정보가 학습에 섞여, 실제보다 성능이 좋게 보이는 문제입니다.</dd></div>
+<div><dt>MAE · RMSE</dt><dd>예측값과 실측값 사이의 오차를 요약하는 지표입니다. MAE는 오차 절댓값의 평균이고, RMSE는 오차를 제곱해 평균 낸 뒤 제곱근을 취해 큰 오차에 더 민감합니다.</dd></div>
+</dl></div>
+<div class="glossary-group"><h3>불합격 분류 이해하기</h3><dl class="glossary-list">
+<div><dt>혼동행렬 (Confusion Matrix)</dt><dd>실제 결과와 모델의 예측을 교차해 맞힌 수와 틀린 수를 정리한 표입니다. 이 페이지에서는 불합격을 양성으로 둡니다.</dd></div>
+<div><dt>TP · FN · FP · TN</dt><dd>실제 불합격을 불합격으로 맞히면 TP, 합격으로 놓치면 FN입니다. 실제 합격을 불합격으로 잘못 알리면 FP, 합격으로 맞히면 TN입니다.</dd></div>
+<div><dt>재현율 · 정밀도</dt><dd>재현율은 실제 불합격 중 찾아낸 비율입니다. 정밀도는 불합격으로 예측한 것 중 실제 불합격인 비율입니다.</dd></div>
+<div><dt>임계값 (Threshold)</dt><dd>모델의 점수를 불합격 판정으로 바꾸는 기준입니다. 기준을 바꾸면 놓치는 불합격과 잘못 울리는 경보가 달라질 수 있습니다.</dd></div>
+<div><dt>클래스 불균형</dt><dd>합격과 불합격처럼 각 범주의 개수가 크게 다른 상태입니다. 불합격이 적으면 정확도만 보고 모델을 평가하기 어렵습니다.</dd></div>
+<div><dt>이상탐지</dt><dd>정상적인 상태와 다르거나 문제가 있을 가능성이 있는 사례를 찾는 일입니다. SECOM의 합격·불합격 분류는 모든 고장 유형을 식별하는 것과 같지는 않습니다.</dd></div>
+</dl></div></section>
+<section id="sources"><div class="eyebrow">06 / REFERENCES</div><h2>출처와 더 읽을 자료</h2><ul><li><a href="https://zenodo.org/records/16881338">Zenodo · PVD AlCu/WTi 공정 및 두께 데이터</a> — 센서와 17개 측정 지점 설명</li><li><a href="https://archive.ics.uci.edu/dataset/179/secom">UCI · SECOM 데이터셋</a> — 데이터 크기, 검사 라벨, 결측값</li><li><a href="https://scikit-learn.org/stable/common_pitfalls.html">scikit-learn · 데이터 누출과 전처리 주의사항</a></li><li><a href="https://scikit-learn.org/stable/modules/model_evaluation.html">scikit-learn · 회귀·분류 평가 지표</a></li></ul></section></main>
+<script>const s=document.getElementById('threshold'),v=document.getElementById('thresholdValue'),r=document.getElementById('thresholdResult');const examples=[['0.3','기준 0.3: TP 47, FN 3, FP 100, TN 850 → 재현율 94%, 정밀도 약 32.0%'],['0.5','기준 0.5: TP 40, FN 10, FP 30, TN 920 → 재현율 80%, 정밀도 57.1%'],['0.8','기준 0.8: TP 25, FN 25, FP 5, TN 945 → 재현율 50%, 정밀도 약 83.3%']];s.addEventListener('input',()=>{const x=examples[Number(s.value)];v.textContent=x[0];r.textContent=x[1]});</script>
+<script src="../assets/three/three.min.js"></script>
+<script>
+(()=>{
+ const canvas=document.getElementById('vmScene');
+ const az=document.getElementById('vmAzimuth'),tilt=document.getElementById('vmTilt'),stage=document.getElementById('vmStage');
+ const pause=document.getElementById('vmPause'), reset=document.getElementById('vmReset'),status=document.getElementById('vmRenderStatus');
+ const descriptions={train:'과거 공정의 센서 X + 실측 두께 Y → 학습 → 예측 모델. X·Y의 대응을 확인해야 합니다.',predict:'새 공정의 센서 X → 학습된 모델 → 예상 두께 ŷ. 새 웨이퍼의 실측 Y는 입력하지 않습니다.',verify:'예측 두께 ŷ와 이후 계측한 두께 Y를 비교해 오차를 확인합니다.'};
+ const buttons=Array.from(document.querySelectorAll('[data-vm-stage]'));
+ const syncStageButtons=()=>buttons.forEach(button=>button.setAttribute('aria-pressed',String(button.dataset.vmStage===stage.value)));
+ buttons.forEach(button=>button.addEventListener('click',()=>{stage.value=button.dataset.vmStage;stage.dispatchEvent(new Event('change',{bubbles:true}));syncStageButtons()}));
+ stage.addEventListener('change',syncStageButtons);syncStageButtons();
+ let renderer;
+ try {
+  if(!window.THREE) throw new Error('Three.js 라이브러리를 읽지 못했습니다.');
+  renderer=new THREE.WebGLRenderer({canvas,antialias:true,alpha:false});
+ } catch(e){status.textContent='3D 화면을 표시하지 못했습니다. WebGL 지원 브라우저에서 열고 assets/three/three.min.js 파일을 확인해 주세요. 아래 단계 설명은 이용할 수 있습니다.'; stage.addEventListener('change',()=>{document.getElementById('vmStageText').textContent=descriptions[stage.value]});document.getElementById('vmStageText').textContent=descriptions[stage.value];pause.disabled=true;return;}
+ renderer.setPixelRatio(Math.min(window.devicePixelRatio||1,1.5));renderer.setClearColor(0x292929);
+ const scene=new THREE.Scene(), camera=new THREE.PerspectiveCamera(38,720/450,0.1,100);
+ scene.add(new THREE.HemisphereLight(0xffffff,0x4c4c4c,2.2));
+ const light=new THREE.DirectionalLight(0xffffff,2.2);light.position.set(-3,8,6);scene.add(light);
+ const standard=(c,opts={})=>new THREE.MeshStandardMaterial({color:c,roughness:.48,metalness:.15,...opts});
+ const chamberCenter=-2.2;
+ const base=new THREE.Mesh(new THREE.CylinderGeometry(1.35,1.35,.16,64),standard(0x777777));base.position.set(chamberCenter,-.60,0);scene.add(base);
+ const wafer=new THREE.Mesh(new THREE.CylinderGeometry(1.22,1.22,.12,64),standard(0xb8b8b8));wafer.position.set(chamberCenter,-.43,0);scene.add(wafer);
+ const film=new THREE.Mesh(new THREE.CylinderGeometry(1.22,1.22,.09,64),standard(0xe65a24,{metalness:.4}));film.position.set(chamberCenter,-.325,0);scene.add(film);
+ const wire=new THREE.LineSegments(new THREE.EdgesGeometry(new THREE.BoxGeometry(3.4,2.6,3.1)),new THREE.LineBasicMaterial({color:0x9c9c9c,transparent:true,opacity:.75}));wire.position.set(chamberCenter,.55,0);scene.add(wire);
+ const sensorPositions=[[-3.85,.7,.1],[-.55,.95,-.3],[-2.8,1.15,1.45]];
+ sensorPositions.forEach(pos=>{const o=new THREE.Mesh(new THREE.BoxGeometry(.27,.27,.27),standard(0xd4d4d4,{emissive:0x383838,emissiveIntensity:.45}));o.position.set(...pos);scene.add(o)});
+ const model=new THREE.Mesh(new THREE.BoxGeometry(1.38,1.3,1.3),standard(0xcccccc,{emissive:0x3a3a3a,emissiveIntensity:.4}));model.position.set(1.4,.15,0);scene.add(model);
+ const edgeModel=new THREE.LineSegments(new THREE.EdgesGeometry(model.geometry),new THREE.LineBasicMaterial({color:0xffffff}));model.add(edgeModel);
+ const output=new THREE.Mesh(new THREE.BoxGeometry(.95,.95,.95),standard(0x929292,{emissive:0x333333,emissiveIntensity:.25}));output.position.set(4.15,.15,0);scene.add(output);
+ const outline=new THREE.LineSegments(new THREE.EdgesGeometry(output.geometry),new THREE.LineBasicMaterial({color:0xe5e5e5}));output.add(outline);
+ const paths={
+  x:{from:new THREE.Vector3(-.55,.95,-.3),to:new THREE.Vector3(.7,.15,0),color:0xffffff},
+  measured:{from:new THREE.Vector3(-2.2,-.25,.4),to:new THREE.Vector3(.7,-.3,0),color:0xff8b48},
+  predicted:{from:new THREE.Vector3(2.1,.35,0),to:new THREE.Vector3(3.68,.35,0),color:0xb4b4b4},
+  compare:{from:new THREE.Vector3(-2.2,-.25,.6),to:new THREE.Vector3(3.68,-.1,.35),color:0xff8b48}
+ };
+ const routeSet={train:['x','measured'],predict:['x','predicted'],verify:['predicted','compare']};
+ Object.values(paths).forEach(p=>{
+  p.line=new THREE.Line(new THREE.BufferGeometry().setFromPoints([p.from,p.to]),new THREE.LineBasicMaterial({color:p.color,transparent:true,opacity:.6}));scene.add(p.line);
+  p.markers=[]; for(let i=0;i<3;i++){const m=new THREE.Mesh(new THREE.SphereGeometry(.105,12,10),new THREE.MeshBasicMaterial({color:p.color}));scene.add(m);p.markers.push(m)}
+ });
+ const labels=document.getElementById('vmLegend');let playing=!window.matchMedia('(prefers-reduced-motion: reduce)').matches, visible=true, last=0,elapsed=0,frame=0;
+ function resize(){const w=Math.max(1,canvas.clientWidth),h=Math.max(1,Math.round(w*450/720));renderer.setSize(w,h,false);camera.aspect=w/h;camera.updateProjectionMatrix();draw()}
+ function updateControls(){syncStageButtons();document.getElementById('vmAzimuthValue').textContent=az.value+'°';document.getElementById('vmTiltValue').textContent=tilt.value+'°';document.getElementById('vmStageText').textContent=descriptions[stage.value];
+  const used=routeSet[stage.value];Object.entries(paths).forEach(([name,p])=>{p.line.visible=used.includes(name);p.markers.forEach(m=>m.visible=used.includes(name))});
+  labels.textContent=stage.value==='train'?'흰색: 센서 X  |  주황: 실측 Y  |  상자: 예측 모델':stage.value==='predict'?'흰색: 센서 X  |  회색: 예측 ŷ  |  상자: 예측 모델':'회색: 예측 ŷ  |  주황: 이후 실측 Y  |  오른쪽 상자: 오차 비교';
+  pause.textContent=playing?'애니메이션 일시정지':'애니메이션 재생';pause.setAttribute('aria-pressed',String(!playing));draw();
+ }
+ function draw(){const a=Number(az.value)*Math.PI/180,t=Number(tilt.value)*Math.PI/180,R=14;camera.position.set(R*Math.cos(t)*Math.sin(a),R*Math.sin(t),R*Math.cos(t)*Math.cos(a));camera.lookAt(.05,.1,0);Object.values(paths).forEach(p=>p.markers.forEach((m,i)=>m.position.lerpVectors(p.from,p.to,((elapsed*.34+i/3)%1))));renderer.render(scene,camera)}
+ function tick(time){frame=0;if(!playing||!visible)return;if(last)elapsed+=Math.min((time-last)/1000,.05);last=time;draw();frame=requestAnimationFrame(tick)}
+ function start(){if(playing&&visible&&!frame){last=0;frame=requestAnimationFrame(tick)}}
+ for(const el of [az,tilt,stage])el.addEventListener('input',updateControls);stage.addEventListener('change',updateControls);
+ pause.addEventListener('click',()=>{playing=!playing;if(!playing&&frame){cancelAnimationFrame(frame);frame=0}updateControls();start()});
+ reset.addEventListener('click',()=>{az.value=-35;tilt.value=55;stage.value='train';elapsed=0;updateControls();start()});
+ let drag=null;canvas.addEventListener('pointerdown',e=>{drag={x:e.clientX,y:e.clientY,az:Number(az.value),tilt:Number(tilt.value)};canvas.setPointerCapture(e.pointerId)});
+ canvas.addEventListener('pointermove',e=>{if(!drag)return;az.value=Math.max(-180,Math.min(180,drag.az+(e.clientX-drag.x)*.7));tilt.value=Math.max(20,Math.min(80,drag.tilt-(e.clientY-drag.y)*.35));updateControls()});
+ canvas.addEventListener('pointerup',()=>{drag=null});canvas.addEventListener('pointercancel',()=>{drag=null});
+ if(window.ResizeObserver)new ResizeObserver(resize).observe(canvas);else window.addEventListener('resize',resize);
+ if(window.IntersectionObserver)new IntersectionObserver(entries=>{visible=entries[0].isIntersecting;if(!visible&&frame){cancelAnimationFrame(frame);frame=0}start()},{threshold:.01}).observe(canvas);
+ resize();updateControls();start();
+})();
+</script>
+</body></html>
